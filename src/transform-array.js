@@ -13,9 +13,35 @@ const { NotImplementedError } = require('../extensions/index.js');
  * transform([1, 2, 3, '--discard-prev', 4, 5]) => [1, 2, 4, 5]
  * 
  */
-function transform(/* arr */) {
-  throw new NotImplementedError('Not implemented');
-  // remove line with error and write your code here
+function transform(arr) {
+  if (!Array.isArray(arr)) {
+    throw new Error('\'arr\' parameter must be an instance of the Array!');
+    console.log('\'arr\' parameter must be an instance of the Array!')
+  } else {
+    const output=[...arr];
+    const dict = ["--discard-next","--discard-prev","--double-next","--double-prev","discarded"];
+    for (let i=0;i<output.length;i++) {
+      if (output[i]==="--discard-next" && output[i+1] && typeof output[i+1] === "number") {
+        output[i+1] = "discarded";
+        i++;
+      }
+      if (output[i]==="--discard-prev" && output[i-1] && typeof output[i-1] === "number") {
+        output[i-1] = "discarded";
+      }
+      if (output[i]==="--double-next" && output[i+1] && typeof output[i+1] === "number") {
+        typeof output[i+1] === "object" ? output[i] = {...output[i+1]} : output[i] = output[i+1];
+        i++;
+      }
+      if (output[i] ==="--double-prev" && output[i-1] && typeof output[i-1] === "number") {
+        typeof output[i-1] === "object" ? output[i] = {...output[i-1]} : output[i] = output[i-1];
+      }
+    }
+
+  const result = output.filter(item => {
+    return item !== "--discard-next" && item !== "--discard-prev" && item !== "--double-next" && item !== "--double-prev" && item !== "discarded";
+  });
+  return result;
+  }
 }
 
 module.exports = {
